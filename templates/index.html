@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo de Predicción</title>
+</head>
+<body>
+    <h2>Modelo de Predicción con scikit-learn</h2>
+    <form id="predict-form">
+        <label for="SMOKE">SMOKE:</label>
+        <select id="SMOKE" name="SMOKE" required>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select><br><br>
+
+        <label for="CALC">CALC:</label>
+        <select id="CALC" name="CALC" required>
+            <option value="Sometimes">Sometimes</option>
+            <option value="no">No</option>
+            <option value="Frequently">Frequently</option>
+            <option value="Always">Always</option>
+        </select><br><br>
+
+        <label for="NCP">NCP:</label>
+        <input type="text" id="NCP" name="NCP" required><br><br>
+
+        <label for="CH2O">CH2O:</label>
+        <input type="text" id="CH2O" name="CH2O" required><br><br>
+
+        <label for="FAF">FAF:</label>
+        <input type="text" id="FAF" name="FAF" required><br><br>
+
+        <label for="TUE">TUE:</label>
+        <input type="text" id="TUE" name="TUE" required><br><br>
+
+        <label for="MTRANS">MTRANS:</label>
+        <select id="MTRANS" name="MTRANS" required>
+            <option value="Public_Transportation">Public Transportation</option>
+            <option value="Walking">Walking</option>
+            <option value="Automobile">Automobile</option>
+            <option value="Motorbike">Motorbike</option>
+            <option value="Bike">Bike</option>
+        </select><br><br>
+
+        <label for="FCVC">FCVC:</label>
+        <input type="text" id="FCVC" name="FCVC" required><br><br>
+
+        <input type="submit" value="Predecir">
+    </form>
+    <div id="prediction-result"></div>
+
+    <script>
+        document.getElementById('predict-form').onsubmit = function(e) {
+            e.preventDefault();
+
+            var SMOKE = document.getElementById('SMOKE').value;
+            var CALC = document.getElementById('CALC').value;
+            var NCP = parseFloat(document.getElementById('NCP').value);
+            var CH2O = parseFloat(document.getElementById('CH2O').value);
+            var FAF = parseFloat(document.getElementById('FAF').value);
+            var TUE = parseFloat(document.getElementById('TUE').value);
+            var MTRANS = document.getElementById('MTRANS').value;
+            var FCVC = parseFloat(document.getElementById('FCVC').value);
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    SMOKE: SMOKE,
+                    CALC: CALC,
+                    NCP: NCP,
+                    CH2O: CH2O,
+                    FAF: FAF,
+                    TUE: TUE,
+                    MTRANS: MTRANS,
+                    FCVC: FCVC
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('prediction-result').textContent = 'Predicción: ' + data.prediction;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        };
+    </script>
+</body>
+</html>
